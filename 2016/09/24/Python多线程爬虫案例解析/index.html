@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.4.1" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.4.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.4.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.4.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.4.1" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '6.4.1',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="本文为作者原创文章，转载请注明出处。 工具爬网页的一个很重要的工具就是对网页进行分析，所以熟悉Chrome的开发者工具使用很重要（其实很简单，不要被吓到。）  使用Chrome可以查看网页的html源码 使用Chrome开发者工具可以查看网页指定部分的源码  Python包Python有很多有用的爬虫工具包，这里只使用两个最基本的包（入门简单最好了）。  urllib2用来获取网页的源码。简单地可">
+<meta name="keywords" content="Python,爬虫,多线程">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python多线程爬虫案例解析">
+<meta property="og:url" content="http://gyxie.github.io/2016/09/24/Python多线程爬虫案例解析/index.html">
+<meta property="og:site_name" content="Garry&#39;s Notes">
+<meta property="og:description" content="本文为作者原创文章，转载请注明出处。 工具爬网页的一个很重要的工具就是对网页进行分析，所以熟悉Chrome的开发者工具使用很重要（其实很简单，不要被吓到。）  使用Chrome可以查看网页的html源码 使用Chrome开发者工具可以查看网页指定部分的源码  Python包Python有很多有用的爬虫工具包，这里只使用两个最基本的包（入门简单最好了）。  urllib2用来获取网页的源码。简单地可">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://gyxie.github.io/img/clawer-01.png">
+<meta property="og:image" content="http://gyxie.github.io/img/clawer-02.png">
+<meta property="og:image" content="http://gyxie.github.io/img/clawer-03.png">
+<meta property="og:image" content="http://gyxie.github.io/img/clawer-04.png">
+<meta property="og:updated_time" content="2018-09-29T05:19:44.295Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Python多线程爬虫案例解析">
+<meta name="twitter:description" content="本文为作者原创文章，转载请注明出处。 工具爬网页的一个很重要的工具就是对网页进行分析，所以熟悉Chrome的开发者工具使用很重要（其实很简单，不要被吓到。）  使用Chrome可以查看网页的html源码 使用Chrome开发者工具可以查看网页指定部分的源码  Python包Python有很多有用的爬虫工具包，这里只使用两个最基本的包（入门简单最好了）。  urllib2用来获取网页的源码。简单地可">
+<meta name="twitter:image" content="http://gyxie.github.io/img/clawer-01.png">
+
+
+
+
+
+
+  <link rel="canonical" href="http://gyxie.github.io/2016/09/24/Python多线程爬虫案例解析/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Python多线程爬虫案例解析 | Garry's Notes</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Garry's Notes</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />Home</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />Archives</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://gyxie.github.io/2016/09/24/Python多线程爬虫案例解析/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Garry">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Garry's Notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Python多线程爬虫案例解析
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2016-09-24 01:02:39" itemprop="dateCreated datePublished" datetime="2016-09-24T01:02:39+10:00">2016-09-24</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2018-09-29 15:19:44" itemprop="dateModified" datetime="2018-09-29T15:19:44+10:00">2018-09-29</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/爬虫/" itemprop="url" rel="index"><span itemprop="name">爬虫</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><em>本文为作者原创文章，转载请注明出处。</em></p>
+<h2 id="工具"><a href="#工具" class="headerlink" title="工具"></a>工具</h2><p>爬网页的一个很重要的工具就是对网页进行分析，所以熟悉Chrome的开发者工具使用很重要（其实很简单，不要被吓到。）</p>
+<ul>
+<li>使用Chrome可以查看网页的html源码<br><img src="/img/clawer-01.png" alt=""></li>
+<li>使用Chrome开发者工具可以查看网页指定部分的源码<br><img src="/img/clawer-02.png" alt=""></li>
+</ul>
+<h2 id="Python包"><a href="#Python包" class="headerlink" title="Python包"></a>Python包</h2><p>Python有很多有用的爬虫工具包，这里只使用两个最基本的包（入门简单最好了）。</p>
+<ul>
+<li>urllib2<br>用来获取网页的源码。简单地可以理解为：你填一个url，它给你返回网页代码。</li>
+<li>pyquery<br>主要用来定位找到我们感兴趣的html代码。</li>
+</ul>
+<h2 id="案例背景"><a href="#案例背景" class="headerlink" title="案例背景"></a>案例背景</h2><p>一亩三分地论坛上有很多留学申请的录取信息，包含申请者的三维条件和录取情况，可以用来分析学校的录取条件等信息。</p>
+<h2 id="步骤"><a href="#步骤" class="headerlink" title="步骤"></a>步骤</h2><ol>
+<li><p>获得我们要爬的所有网页的URL<br> <code>http://www.1point3acres.com/bbs/forum-82-1.html</code>这个网页是该论坛录取汇报的入口。<br> <img src="/img/clawer-03.png" alt=""><br> 首先我们确定一下有多少录取汇报帖子。<br> 查看网页源码定位到下面这段html代码。</p>
+ <figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">class</span>=<span class="string">"bm_h"</span> <span class="attr">href</span>=<span class="string">"javascript:;"</span> <span class="attr">rel</span>=<span class="string">"forum.php?mod=forumdisplay&amp;fid=82&amp;sortid=164&amp;%1=&amp;sortid=164&amp;page=2"</span> <span class="attr">curpage</span>=<span class="string">"1"</span> <span class="attr">id</span>=<span class="string">"autopbn"</span> <span class="attr">totalpage</span>=<span class="string">"1000"</span> <span class="attr">picstyle</span>=<span class="string">"0"</span> <span class="attr">forumdefstyle</span>=<span class="string">""</span>&gt;</span>下一页 &amp;raquo;<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p> 下面这行代码获取帖子数。</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">num =  int(doc(&apos;#autopbn&apos;).attr(&apos;totalpage&apos;))# 获取页数</span><br></pre></td></tr></table></figure>
+<p> 观察帖子的URL可以看到不用的帖子的区别在于后面的数据不同，而且这个数子的范围就在上面获取的帖子数内，所以我们就很容易可以构造出我们的真正要爬的网页的URL。</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">page_url = &apos;http://www.1point3acres.com/bbs/forum-82-%s.html&apos; % index</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>设置多线程<br>根据系统的核数设置线程的数目。开启多线程可以加快我们的爬取速度。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pool = Pool(8)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>爬取网页<br>上面已经拿到了所有的URL。根据这个URL用urllib2去获取网页内容就可以了。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">page = urllib2.urlopen(url)</span><br><span class="line">content =  page.read()</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>解析网页<br>其实上面已经用到了解析的方法，就是采用pyquery去定位到我们感兴趣的内容。</p>
+</li>
+<li><p>保存数据<br>解析到网页后可以设计好一定的格式去保存数据。建议采用CSV格式，即以逗号分隔。这个格式Excel也可以很方面的打开处理。<br><img src="/img/clawer-04.png" alt=""></p>
+</li>
+<li><p>数据清理及分析<br>爬下来的数据可能包含一些脏数据，可以用正则表达式来做数据清洗。（下次有时间我会写一篇关于正则表达式方面的经验。）</p>
+</li>
+</ol>
+<h2 id="完整源码"><a href="#完整源码" class="headerlink" title="完整源码"></a>完整源码</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/python</span></span><br><span class="line"><span class="comment"># -*- coding: UTF-8 -*-</span></span><br><span class="line"><span class="keyword">from</span> sys <span class="keyword">import</span> argv</span><br><span class="line"><span class="keyword">from</span> pyquery <span class="keyword">import</span> PyQuery <span class="keyword">as</span> pyq</span><br><span class="line"><span class="keyword">from</span> multiprocessing <span class="keyword">import</span> Pool</span><br><span class="line"><span class="keyword">import</span> traceback</span><br><span class="line"><span class="keyword">import</span> codecs</span><br><span class="line"><span class="keyword">import</span> urllib2</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line">reload(sys)</span><br><span class="line">sys.setdefaultencoding(<span class="string">'UTF-8'</span>)</span><br><span class="line"></span><br><span class="line">script, output_file, except_file = argv</span><br><span class="line"></span><br><span class="line">output = codecs.open(output_file, <span class="string">'w'</span>, <span class="string">'UTF-8'</span>) <span class="comment"># 保存爬取的数据的文件</span></span><br><span class="line">except_urls = codecs.open(except_file, <span class="string">'w'</span>, <span class="string">'UTF-8'</span>) <span class="comment"># 保存失败的URL的文件</span></span><br><span class="line"></span><br><span class="line">url = <span class="string">'http://www.1point3acres.com/bbs/forum-82-1.html'</span></span><br><span class="line">page = urllib2.urlopen(url)</span><br><span class="line">content =  unicode(page.read(), <span class="string">"gbk"</span>)</span><br><span class="line">doc = pyq(content)</span><br><span class="line">num =  int(doc(<span class="string">'#autopbn'</span>).attr(<span class="string">'totalpage'</span>))<span class="comment"># 获取页数</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">print</span> <span class="string">'%s pages'</span> % num</span><br><span class="line"></span><br><span class="line">title_url = []</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_report</span><span class="params">(url)</span>:</span></span><br><span class="line">	<span class="keyword">if</span> url == <span class="keyword">None</span>:</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	<span class="keyword">try</span>:</span><br><span class="line">		page = urllib2.urlopen(url)</span><br><span class="line">		content =  page.read()</span><br><span class="line">		doc = pyq(content)</span><br><span class="line">		title = doc(<span class="string">'h1'</span>).text()</span><br><span class="line">		postlist = doc(<span class="string">'#postlist'</span>)</span><br><span class="line">		main = postlist(<span class="string">'div:first'</span>)</span><br><span class="line">		main = main(<span class="string">'.pcb'</span>)</span><br><span class="line">		head = main(<span class="string">'u'</span>).text()</span><br><span class="line">		info_list = main(<span class="string">'li'</span>).items()</span><br><span class="line">		line = title + <span class="string">'\t'</span> + head</span><br><span class="line">		<span class="keyword">for</span> item <span class="keyword">in</span> info_list:</span><br><span class="line">			line = <span class="string">'%s\t%s'</span> % (line, item.text().strip(<span class="string">'\r\n'</span>))</span><br><span class="line">		<span class="comment"># line = line.replace(' ','')</span></span><br><span class="line">		user = doc(<span class="string">'.avatar'</span>)</span><br><span class="line">		user_url = doc(<span class="string">'.avtm'</span>).attr(<span class="string">'href'</span>)</span><br><span class="line">		line = <span class="string">'%s\t%s\t%s\t%s\r\n'</span> % (line, main.text().replace(<span class="string">'\t'</span>, <span class="string">' '</span>), url, user_url)</span><br><span class="line">		output.write(line)</span><br><span class="line">	<span class="keyword">except</span> (KeyboardInterrupt, SystemExit):</span><br><span class="line">		<span class="keyword">raise</span></span><br><span class="line">	<span class="keyword">except</span> Exception, e:</span><br><span class="line">		<span class="keyword">print</span> <span class="string">'except: url = %s'</span> % url</span><br><span class="line">		except_urls.write(<span class="string">'%s\r\n'</span> % url)</span><br><span class="line">		<span class="keyword">print</span> e</span><br><span class="line">		traceback.print_exc()</span><br><span class="line">	<span class="keyword">return</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_post_urls</span><span class="params">(index)</span>:</span></span><br><span class="line">	<span class="keyword">try</span>:</span><br><span class="line">		page_url = <span class="string">'http://www.1point3acres.com/bbs/forum-82-%s.html'</span> % index</span><br><span class="line">		page = urllib2.urlopen(page_url)</span><br><span class="line">		content =  unicode(page.read(), <span class="string">"gbk"</span>)</span><br><span class="line">		doc = pyq(content)</span><br><span class="line">		table = doc(<span class="string">'#threadlisttableid'</span>)</span><br><span class="line">		<span class="keyword">for</span> tr <span class="keyword">in</span> table(<span class="string">'tr'</span>).items():</span><br><span class="line">			post_url = tr(<span class="string">'.xst'</span>).attr(<span class="string">'href'</span>)</span><br><span class="line">			get_report(post_url)</span><br><span class="line">			<span class="comment"># post_title = tr('.xst').text()</span></span><br><span class="line">			<span class="comment"># cites = tr('cite').items()</span></span><br><span class="line">			<span class="comment"># print post_title</span></span><br><span class="line">			<span class="comment"># target.write('%s\t%s\r\n' % (post_title, post_url))</span></span><br><span class="line">			<span class="comment"># title_url.append('%s\t%s\r\n' % (post_title, post_url))</span></span><br><span class="line">	<span class="keyword">except</span> (KeyboardInterrupt, SystemExit):</span><br><span class="line">		<span class="keyword">raise</span></span><br><span class="line">	<span class="keyword">except</span> Exception, e:</span><br><span class="line">		<span class="keyword">print</span> <span class="string">'except: %s'</span> % page_url</span><br><span class="line">		<span class="keyword">print</span> e</span><br><span class="line">		traceback.print_exc()</span><br><span class="line">	<span class="keyword">return</span></span><br><span class="line"></span><br><span class="line">pool = Pool(<span class="number">8</span>)</span><br><span class="line">pool.map(get_post_urls, range(<span class="number">1</span>, num + <span class="number">1</span>))</span><br><span class="line">pool.close()</span><br><span class="line">pool.join()</span><br><span class="line"></span><br><span class="line"><span class="comment"># for item in set(title_url):</span></span><br><span class="line"><span class="comment"># 	target.write(item)</span></span><br><span class="line">except_urls.close()</span><br><span class="line">output.close()</span><br></pre></td></tr></table></figure>
+<hr>
+<p><em>这篇文章是针对非计算机专业的同学写的，如果有不清楚的地方欢迎在下面留言。我会不断完善这篇文章，希望能帮到大家。</em></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Python/" rel="tag"># Python</a>
+          
+            <a href="/tags/爬虫/" rel="tag"># 爬虫</a>
+          
+            <a href="/tags/多线程/" rel="tag"># 多线程</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/09/23/抽取PDF的繁体字并转成简体字/" rel="next" title="抽取PDF的繁体字并转成简体字">
+                <i class="fa fa-chevron-left"></i> 抽取PDF的繁体字并转成简体字
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/01/24/深入XGBoost/" rel="prev" title="深入XGBoost">
+                深入XGBoost <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Garry</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">23</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">15</span>
+                    <span class="site-state-item-name">categories</span>
+                  
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">27</span>
+                    <span class="site-state-item-name">tags</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#工具"><span class="nav-number">1.</span> <span class="nav-text">工具</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Python包"><span class="nav-number">2.</span> <span class="nav-text">Python包</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#案例背景"><span class="nav-number">3.</span> <span class="nav-text">案例背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#步骤"><span class="nav-number">4.</span> <span class="nav-text">步骤</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#完整源码"><span class="nav-number">5.</span> <span class="nav-text">完整源码</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Garry</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> v3.7.1</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a class="theme-link" target="_blank" href="https://theme-next.org">NexT.Muse</a> v6.4.1</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.4.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.4.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.4.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.4.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.4.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
