@@ -293,6 +293,178 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://gyxie.github.io/2015/09/17/Kernighan-Lin-Algorithm/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Garry">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Garry's Notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/09/17/Kernighan-Lin-Algorithm/" itemprop="url">
+                  Kernighan-Lin Algorithm
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2015-09-17 01:16:35" itemprop="dateCreated datePublished" datetime="2015-09-17T01:16:35+08:00">2015-09-17</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2018-09-29 13:19:44" itemprop="dateModified" datetime="2018-09-29T13:19:44+08:00">2018-09-29</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Algorithm/" itemprop="url" rel="index"><span itemprop="name">Algorithm</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="Kernighan-Lin"><a href="#Kernighan-Lin" class="headerlink" title="Kernighan-Lin"></a>Kernighan-Lin</h2><blockquote>
+<p>这是一个启发式的(heuristic)的解决图分割问题的算法.<br><strong>Kernighan-Lin</strong>是一个O(n<sup>2</sup>log(n))的解决图分割问题的启发式算法(heuristic algorithm)<br><strong>G(V,E)</strong>表示一个图,<strong>V</strong>表示节点集合,<strong>E</strong>表示边的集合.Kernighan-Lin算法试图找到一个分割(partition)将V分成不相连(disjoint)的两个子集<strong>A</strong>和<strong>B</strong>.且A和B大小相同,满足A和B之间的边的权重之和<strong>T</strong>最小.<strong>I<sub>a</sub></strong>表示<strong>a</strong>的内部消耗.也就是a和A中的其它节点之间边的权重的和.<strong>E<sub>a</sub></strong>表示a的外部消耗,也就是a和B中节点间的边的权重的和.更进一步<br>    <strong>D<sub>a</sub>=E<sub>a</sub>-I<sub>a</sub></strong><br>表示外部消耗和内部消耗的差.如果a和b是可交换的,那么消耗的减少就是<br>    <strong>T<sub>old</sub>-T<sub>new</sub>=D<sub>a</sub>+D<sub>b</sub>-2c<sub>a,b</sub></strong><br>其中<strong>c<sub>a,b</sub></strong>是a和b之间所有可能边的消耗总和.<br>这个算法试图找到一个A和B元素之间的最优的可交换操作序列,使得T<sub>old</sub>-T<sub>new</sub>最大,且产生一个A和B之间的分割.<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">function Kernighan-Lin(G(V,E)):</span><br><span class="line">    determine a balanced initial partition of the nodes into sets A and B</span><br><span class="line">    do</span><br><span class="line">       compute D values for all a in A and b in B</span><br><span class="line">       let gv, av, and bv be empty lists</span><br><span class="line">       for (n := 1 to |V|/2)</span><br><span class="line">          find a from A and b from B, such that g = D[a] + D[b] - 2*E(a, b) is maximal</span><br><span class="line">          remove a and b from further consideration in this pass</span><br><span class="line">         add g to gv, a to av, and b to bv</span><br><span class="line">         update D values for the elements of A = A \ a and B = B \ b</span><br><span class="line">      end for</span><br><span class="line">      find k which maximizes g_max, the sum of g[1],...,g[k]</span><br><span class="line">      if (g_max &gt; 0) then</span><br><span class="line">         Exchange av[1],av[2],...,av[k] with bv[1],bv[2],...,bv[k]</span><br><span class="line">   until (g_max &lt;= 0)</span><br><span class="line">return G(V,E)</span><br></pre></td></tr></table></figure></p>
+</blockquote>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://gyxie.github.io/2015/09/16/Linux常用命令/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1528,7 +1700,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">26</span>
+                    <span class="site-state-item-count">27</span>
                     <span class="site-state-item-name">posts</span>
                   </a>
                 </div>
