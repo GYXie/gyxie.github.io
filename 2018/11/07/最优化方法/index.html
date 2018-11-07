@@ -108,25 +108,24 @@
 
 
 
-  <meta name="description" content="Kernighan-Lin 这是一个启发式的(heuristic)的解决图分割问题的算法.Kernighan-Lin是一个O(n2log(n))的解决图分割问题的启发式算法(heuristic algorithm)G(V,E)表示一个图,V表示节点集合,E表示边的集合.Kernighan-Lin算法试图找到一个分割(partition)将V分成不相连(disjoint)的两个子集A和B.且A和B大">
-<meta name="keywords" content="Algorithm">
+  <meta name="description" content="梯度下降法">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Kernighan-Lin Algorithm">
-<meta property="og:url" content="http://gyxie.github.io/2015/09/17/Kernighan-Lin-Algorithm/index.html">
+<meta property="og:title" content="最优化方法">
+<meta property="og:url" content="http://gyxie.github.io/2018/11/07/最优化方法/index.html">
 <meta property="og:site_name" content="Garry&#39;s Notes">
-<meta property="og:description" content="Kernighan-Lin 这是一个启发式的(heuristic)的解决图分割问题的算法.Kernighan-Lin是一个O(n2log(n))的解决图分割问题的启发式算法(heuristic algorithm)G(V,E)表示一个图,V表示节点集合,E表示边的集合.Kernighan-Lin算法试图找到一个分割(partition)将V分成不相连(disjoint)的两个子集A和B.且A和B大">
+<meta property="og:description" content="梯度下降法">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-09-29T05:19:44.293Z">
+<meta property="og:updated_time" content="2018-11-07T10:15:47.849Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Kernighan-Lin Algorithm">
-<meta name="twitter:description" content="Kernighan-Lin 这是一个启发式的(heuristic)的解决图分割问题的算法.Kernighan-Lin是一个O(n2log(n))的解决图分割问题的启发式算法(heuristic algorithm)G(V,E)表示一个图,V表示节点集合,E表示边的集合.Kernighan-Lin算法试图找到一个分割(partition)将V分成不相连(disjoint)的两个子集A和B.且A和B大">
+<meta name="twitter:title" content="最优化方法">
+<meta name="twitter:description" content="梯度下降法">
 
 
 
 
 
 
-  <link rel="canonical" href="http://gyxie.github.io/2015/09/17/Kernighan-Lin-Algorithm/"/>
+  <link rel="canonical" href="http://gyxie.github.io/2018/11/07/最优化方法/"/>
 
 
 
@@ -136,7 +135,7 @@
   };
 </script>
 
-  <title>Kernighan-Lin Algorithm | Garry's Notes</title>
+  <title>最优化方法 | Garry's Notes</title>
   
 
 
@@ -297,7 +296,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://gyxie.github.io/2015/09/17/Kernighan-Lin-Algorithm/">
+    <link itemprop="mainEntityOfPage" href="http://gyxie.github.io/2018/11/07/最优化方法/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Garry">
@@ -314,7 +313,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Kernighan-Lin Algorithm
+          <h1 class="post-title" itemprop="name headline">最优化方法
               
             
           </h1>
@@ -339,46 +338,16 @@
                 
               
 
-              <time title="Created: 2015-09-17 01:16:35" itemprop="dateCreated datePublished" datetime="2015-09-17T01:16:35+08:00">2015-09-17</time>
+              <time title="Created: 2018-11-07 18:08:56 / Modified: 18:15:47" itemprop="dateCreated datePublished" datetime="2018-11-07T18:08:56+08:00">2018-11-07</time>
             
 
             
               
 
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">Edited on</span>
-                
-                <time title="Modified: 2018-09-29 13:19:44" itemprop="dateModified" datetime="2018-09-29T13:19:44+08:00">2018-09-29</time>
               
             
           </span>
 
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Algorithm/" itemprop="url" rel="index"><span itemprop="name">Algorithm</span></a></span>
-
-                
-                
-              
-            </span>
           
 
           
@@ -407,9 +376,9 @@
       
 
       
-        <h2 id="Kernighan-Lin"><a href="#Kernighan-Lin" class="headerlink" title="Kernighan-Lin"></a>Kernighan-Lin</h2><blockquote>
-<p>这是一个启发式的(heuristic)的解决图分割问题的算法.<br><strong>Kernighan-Lin</strong>是一个O(n<sup>2</sup>log(n))的解决图分割问题的启发式算法(heuristic algorithm)<br><strong>G(V,E)</strong>表示一个图,<strong>V</strong>表示节点集合,<strong>E</strong>表示边的集合.Kernighan-Lin算法试图找到一个分割(partition)将V分成不相连(disjoint)的两个子集<strong>A</strong>和<strong>B</strong>.且A和B大小相同,满足A和B之间的边的权重之和<strong>T</strong>最小.<strong>I<sub>a</sub></strong>表示<strong>a</strong>的内部消耗.也就是a和A中的其它节点之间边的权重的和.<strong>E<sub>a</sub></strong>表示a的外部消耗,也就是a和B中节点间的边的权重的和.更进一步<br>    <strong>D<sub>a</sub>=E<sub>a</sub>-I<sub>a</sub></strong><br>表示外部消耗和内部消耗的差.如果a和b是可交换的,那么消耗的减少就是<br>    <strong>T<sub>old</sub>-T<sub>new</sub>=D<sub>a</sub>+D<sub>b</sub>-2c<sub>a,b</sub></strong><br>其中<strong>c<sub>a,b</sub></strong>是a和b之间所有可能边的消耗总和.<br>这个算法试图找到一个A和B元素之间的最优的可交换操作序列,使得T<sub>old</sub>-T<sub>new</sub>最大,且产生一个A和B之间的分割.<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">function Kernighan-Lin(G(V,E)):</span><br><span class="line">    determine a balanced initial partition of the nodes into sets A and B</span><br><span class="line">    do</span><br><span class="line">       compute D values for all a in A and b in B</span><br><span class="line">       let gv, av, and bv be empty lists</span><br><span class="line">       for (n := 1 to |V|/2)</span><br><span class="line">          find a from A and b from B, such that g = D[a] + D[b] - 2*E(a, b) is maximal</span><br><span class="line">          remove a and b from further consideration in this pass</span><br><span class="line">         add g to gv, a to av, and b to bv</span><br><span class="line">         update D values for the elements of A = A \ a and B = B \ b</span><br><span class="line">      end for</span><br><span class="line">      find k which maximizes g_max, the sum of g[1],...,g[k]</span><br><span class="line">      if (g_max &gt; 0) then</span><br><span class="line">         Exchange av[1],av[2],...,av[k] with bv[1],bv[2],...,bv[k]</span><br><span class="line">   until (g_max &lt;= 0)</span><br><span class="line">return G(V,E)</span><br></pre></td></tr></table></figure></p>
-</blockquote>
+        <ul>
+<li><a href="/docs/gd.pdf">梯度下降法</a></li>
+</ul>
 
       
     </div>
@@ -428,12 +397,6 @@
 
     <footer class="post-footer">
       
-        <div class="post-tags">
-          
-            <a href="/tags/Algorithm/" rel="tag"># Algorithm</a>
-          
-        </div>
-      
 
       
       
@@ -443,8 +406,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2015/09/16/Linux常用命令/" rel="next" title="Linux常用命令">
-                <i class="fa fa-chevron-left"></i> Linux常用命令
+              <a href="/2018/11/03/算法工程师修炼/" rel="next" title="算法工程师修炼">
+                <i class="fa fa-chevron-left"></i> 算法工程师修炼
               </a>
             
           </div>
@@ -452,10 +415,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2015/09/17/Java源码阅读-ThreadLocal/" rel="prev" title="Java源码阅读-ThreadLocal">
-                Java源码阅读-ThreadLocal <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -500,17 +459,8 @@
       
 
       
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            Table of Contents
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            Overview
-          </li>
-        </ul>
-      
 
-      <section class="site-overview-wrap sidebar-panel">
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -661,22 +611,6 @@
         </div>
       </section>
 
-      
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Kernighan-Lin"><span class="nav-number">1.</span> <span class="nav-text">Kernighan-Lin</span></a></li></ol></div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
       
 
       
